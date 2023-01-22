@@ -1,10 +1,11 @@
 package com.es.phoneshop.model.product;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductsHistory {
+public class ProductsHistory implements Serializable {
     private static ProductsHistory instance;
 
     private static final String SEARCH_HISTORY_SESSION_ATTRIBUTE =

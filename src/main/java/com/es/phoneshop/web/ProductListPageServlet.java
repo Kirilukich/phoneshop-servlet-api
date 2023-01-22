@@ -1,5 +1,9 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.DefaultCartService;
+import com.es.phoneshop.model.cart.OutOfStockException;
 import com.es.phoneshop.model.product.*;
 
 import javax.servlet.ServletConfig;
@@ -9,17 +13,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Currency;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao;
+
+    private CartService cartService;
+
     private ProductsHistory productsHistory;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
+        cartService = DefaultCartService.getInstance();
         productsHistory = ProductsHistory.getInstance();
     }
 
@@ -34,6 +44,27 @@ public class ProductListPageServlet extends HttpServlet {
                 Optional.ofNullable(sortOrder).map(SortOrder::valueOf).orElse(null)
         ));
                 request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            Long productId = Long.parseLong(request.getParameter("productId"));
+            try {
+                NumberFormat format = NumberFormat.getInstance(request.getLocale());
+                int quantity = format.parse(request.getParameter("quantity")).intValue();
+                cartService.add(cartService.getCart(request), productId, quantity);
+                response.sendRedirect(request.getContextPath() + "/products?message=Product added to cart!");
+                return;
+            } catch (NumberFormatException | ParseException e) {
+                request.setAttribute("error", "Invalid quantity");
+            } catch (OutOfStockException e) {
+                request.setAttribute("error", "not enough stock available");
+            }
+            doGet(request, response);
+        } catch (Exception e) {
+            doGet(request, response);
+        }
     }
 
 }
