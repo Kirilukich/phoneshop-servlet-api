@@ -21,17 +21,20 @@ import java.util.Map;
 public class CartPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
+    private ProductsHistory productsHistory;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
+        productsHistory = ProductsHistory.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("cart", cartService.getCart(request));
+        request.setAttribute("history", productsHistory.getProducts(request));
         request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
     }
 

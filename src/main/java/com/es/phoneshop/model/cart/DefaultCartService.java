@@ -45,6 +45,7 @@ public class DefaultCartService implements CartService {
             if (cart.getItems().get(i).getProduct().getCode().equals(product.getCode()) && product.getStock() >= cart.getItems().get(i).getQuantity() + quantity) {
                 cart.getItems().get(i).setQuantity(cart.getItems().get(i).getQuantity() + quantity);
                 cart.getItems().set(i, cart.getItems().get(i));
+                recalculateCart(cart);
                 return;
             } else if (product.getStock() <= cart.getItems().get(i).getQuantity() + quantity) {
                 throw new OutOfStockException(product, quantity, product.getStock());

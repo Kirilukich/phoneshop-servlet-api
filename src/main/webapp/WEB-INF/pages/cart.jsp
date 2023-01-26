@@ -81,6 +81,24 @@
             <button>Update</button>
         </p>
     </form>
+    <table>
+        <h3>Recently viewed</h3>
+        <c:forEach var="product" items="${history}">
+            <td>
+                <p class="info">
+                    <img class="product-tile" src="${product.imageUrl}">
+                </p>
+                <p class="info">
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
+                        ${product.description}
+                </p>
+                <p class="info">
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
+                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                </p>
+            </td>
+        </c:forEach>
+    </table>
     <form id="deleteCartItem" method="post">
 
     </form>
