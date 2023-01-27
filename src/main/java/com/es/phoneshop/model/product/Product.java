@@ -1,6 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 
 public class Product {
@@ -13,6 +14,7 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private String histories;
 
     public Product() {
     }
@@ -32,6 +34,7 @@ public class Product {
         this.code = code;
         this.description = description;
         this.price = price;
+        this.histories = String.valueOf(price);
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -66,6 +69,7 @@ public class Product {
     }
 
     public void setPrice(BigDecimal price) {
+        histories = histories + "," + price;
         this.price = price;
     }
 
@@ -92,20 +96,6 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", currency=" + currency +
-                ", stock=" + stock +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -124,15 +114,7 @@ public class Product {
         return getImageUrl() != null ? getImageUrl().equals(product.getImageUrl()) : product.getImageUrl() == null;
     }
 
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getCode() != null ? getCode().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getPrice() != null ? getPrice().hashCode() : 0);
-        result = 31 * result + (getCurrency() != null ? getCurrency().hashCode() : 0);
-        result = 31 * result + getStock();
-        result = 31 * result + (getImageUrl() != null ? getImageUrl().hashCode() : 0);
-        return result;
+    public String getHistories() {
+        return histories + " $";
     }
 }
