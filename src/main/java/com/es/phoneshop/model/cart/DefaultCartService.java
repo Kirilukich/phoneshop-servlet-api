@@ -42,12 +42,11 @@ public class DefaultCartService implements CartService {
 
         for (int i = 0; i < cart.getItems().size(); i++) {
 
-            if (cart.getItems().get(i).getProduct().getCode().equals(product.getCode()) && product.getStock() >= cart.getItems().get(i).getQuantity() + quantity) {
-                cart.getItems().get(i).setQuantity(cart.getItems().get(i).getQuantity() + quantity);
-                cart.getItems().set(i, cart.getItems().get(i));
-                recalculateCart(cart);
+            CartItem cartItem = cart.getItems().get(i);
+            if (cartItem.getProduct().getCode().equals(product.getCode()) && product.getStock() >= cartItem.getQuantity() + quantity) {
+                changeQuantity(cart, quantity, i, cartItem);
                 return;
-            } else if (product.getStock() <= cart.getItems().get(i).getQuantity() + quantity) {
+            } else if (cartItem.getProduct().getCode().equals(product.getCode()) && product.getStock() <= cartItem.getQuantity() + quantity) {
                 throw new OutOfStockException(product, quantity, product.getStock());
             }
         }
@@ -86,16 +85,20 @@ public class DefaultCartService implements CartService {
 
         for (int i = 0; i < cart.getItems().size(); i++) {
 
-            if (cart.getItems().get(i).getProduct().getCode().equals(product.getCode()) && product.getStock() >= cart.getItems().get(i).getQuantity() + quantity) {
-                cart.getItems().get(i).setQuantity(quantity);
-                cart.getItems().set(i, cart.getItems().get(i));
-                recalculateCart(cart);
+            CartItem cartItem = cart.getItems().get(i);
+            if (cartItem.getProduct().getCode().equals(product.getCode()) && product.getStock() >= cartItem.getQuantity()) {
+                changeQuantity(cart, quantity, i, cartItem);
                 return;
-            } else if (product.getStock() <= cart.getItems().get(i).getQuantity() + quantity) {
+            } else if (cartItem.getProduct().getCode().equals(product.getCode()) && product.getStock() <= cartItem.getQuantity()) {
                 throw new OutOfStockException(product, quantity, product.getStock());
             }
         }
-        cart.getItems().add(new CartItem(product, quantity));
+        recalculateCart(cart);
+    }
+
+    private void changeQuantity(Cart cart, int quantity, int i, CartItem cartItem) {
+        cartItem.setQuantity(quantity);
+        cart.getItems().set(i, cart.getItems().get(i));
         recalculateCart(cart);
     }
 }

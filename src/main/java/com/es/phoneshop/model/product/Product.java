@@ -40,6 +40,21 @@ public class Product implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, String histories) {
+        this.id = id;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+        this.histories = histories;
+    }
+
+    public void setHistories(String histories) {
+        this.histories = histories;
+    }
+
     public Long getId() {
         return id;
     }
