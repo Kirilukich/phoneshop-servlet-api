@@ -27,8 +27,12 @@
                 <tags:sortLink sort="price" order="asc"/>
                 <tags:sortLink sort="price" order="desc"/>
             </td>
+            <td class="quantity">
+                Quantity
+            </td>
         </tr>
         </thead>
+        <form method="post">
         <c:forEach var="product" items="${products}">
             <tr>
                 <td>
@@ -45,8 +49,25 @@
                                           currencySymbol="${product.currency.symbol}"/>
                     </div>
                 </td>
+                <td>
+                    <form method="post" action="${pageContext.servletContext.contextPath}/products">
+                        <label>
+                            <input name="quantity" class="quantity" value="${not empty param.error and param.productId eq product.id ? param.quantity : 1}"/>
+                        </label>
+                        <input type="hidden" name="productId" value="${product.id}"/>
+                        <c:if test="${param.productId eq product.id}">
+                            <div class="error">
+                                    ${param.error}
+                            </div>
+                        </c:if>
+                        <button>
+                            Add to cart
+                        </button>
+                    </form>
+                </td>
             </tr>
         </c:forEach>
+        </form>
     </table>
     <table>
         <h3>Recently viewed</h3>
@@ -61,9 +82,13 @@
                 </p>
                 <p>
                     <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
-                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
                 </p>
             </td>
         </c:forEach>
     </table>
+    <form id="addCartItem" method="post">
+
+    </form>
 </tags:master>
