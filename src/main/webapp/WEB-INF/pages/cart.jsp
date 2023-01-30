@@ -81,6 +81,9 @@
             <button>Update</button>
         </p>
     </form>
+    <form action="${pageContext.servletContext.contextPath}/checkout">
+        <button>Checkout</button>
+    </form>
     <table>
         <h3>Recently viewed</h3>
         <c:forEach var="product" items="${history}">
