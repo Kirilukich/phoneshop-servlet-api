@@ -56,7 +56,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         }
 
         try {
-            cartService.add(cartService.getCart(request), productId, quantity);
+            cartService.add(request, productId, quantity);
         } catch (OutOfStockException e) {
             request.setAttribute("error", "Out of stock, available " + e.getStockAvailable());
             doGet(request, response);

@@ -51,7 +51,7 @@ public class ProductListPageServlet extends HttpServlet {
             try {
                 NumberFormat format = NumberFormat.getInstance(request.getLocale());
                 int quantity = format.parse(request.getParameter("quantity")).intValue();
-                cartService.add(cartService.getCart(request), productId, quantity);
+                cartService.add(request, productId, quantity);
                 response.sendRedirect(request.getContextPath() + "/products?message=Product added to cart!");
                 return;
             } catch (NumberFormatException | ParseException e) {
