@@ -101,4 +101,10 @@ public class DefaultCartService implements CartService {
         cart.getItems().set(i, cart.getItems().get(i));
         recalculateCart(cart);
     }
+
+    @Override
+    public void clearCart(Cart cart) {
+        cart.getItems().removeAll(cart.getItems());
+        recalculateCart(cart);
+    }
 }
