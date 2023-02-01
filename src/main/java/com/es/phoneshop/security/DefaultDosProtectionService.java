@@ -21,7 +21,6 @@ public class DefaultDosProtectionService implements DosProtectionService {
 
     @Override
     public synchronized boolean isAllowed(String ip) {
-        System.out.println(ip);
         Long count = countMap.get(ip);
         Long time = System.currentTimeMillis();
 
