@@ -32,9 +32,6 @@ public class DefaultOrderService implements OrderService {
         }).collect(Collectors.toList()));
         order.setSubtotal(cart.getTotalCost());
         order.setDeliveryCost(calculateDeliveryCost());
-        if (order.getSubtotal() == null) {
-            return null;
-        }
         order.setTotalCost(order.getSubtotal().add(order.getDeliveryCost()));
         return order;
     }
