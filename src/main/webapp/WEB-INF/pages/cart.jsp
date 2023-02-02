@@ -6,7 +6,12 @@
 <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 <tags:master pageTitle="Cart">
     <p>
-        Cart: ${cart}, total quantity: ${cart.totalQuantity}
+    Cart: ${cart}, total quantity: ${cart.totalQuantity}
+    <c:if test="${empty cart.items}">
+        <h1>
+            Sorry, your cart is empty
+        </h1>
+    </c:if>
     </p>
     <c:if test="${not empty param.message}">
         <div class="success">
@@ -66,7 +71,9 @@
                     </td>
                     <td>
                         <button form="deleteCartItem"
-                                formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${item.product.id}">Delete</button>
+                                formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${item.product.id}">
+                            Delete
+                        </button>
                     </td>
                 </tr>
             </c:forEach>
@@ -78,8 +85,15 @@
             </tr>
         </table>
         <p>
-            <button>Update</button>
+            <c:if test="${not empty cart.items}">
+                <button>Update</button>
+            </c:if>
         </p>
+    </form>
+    <form action="${pageContext.servletContext.contextPath}/checkout">
+        <c:if test="${not empty cart.items}">
+            <button>Checkout</button>
+        </c:if>
     </form>
     <table>
         <h3>Recently viewed</h3>
@@ -94,7 +108,8 @@
                 </p>
                 <p class="info">
                     <a href="${pageContext.servletContext.contextPath}/products/${product.id}"></a>
-                    <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
                 </p>
             </td>
         </c:forEach>

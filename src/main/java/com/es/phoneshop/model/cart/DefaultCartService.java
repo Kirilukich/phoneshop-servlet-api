@@ -6,6 +6,7 @@ import com.es.phoneshop.model.product.ProductDao;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class DefaultCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
@@ -33,9 +34,9 @@ public class DefaultCartService implements CartService {
     }
 
     @Override
-    public synchronized void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
+    public synchronized void add(HttpServletRequest request, Long productId, int quantity) throws OutOfStockException {
         Product product = productDao.getProduct(productId);
-
+        Cart cart = getCart(request);
         if (product.getStock() < quantity || quantity < 0) {
             throw new OutOfStockException(product, quantity, product.getStock());
         }
@@ -44,7 +45,7 @@ public class DefaultCartService implements CartService {
 
             CartItem cartItem = cart.getItems().get(i);
             if (cartItem.getProduct().getCode().equals(product.getCode()) && product.getStock() >= cartItem.getQuantity() + quantity) {
-                changeQuantity(cart, quantity, i, cartItem);
+                changeQuantity(cart, cartItem.getQuantity() + quantity, i, cartItem);
                 return;
             } else if (cartItem.getProduct().getCode().equals(product.getCode()) && product.getStock() <= cartItem.getQuantity() + quantity) {
                 throw new OutOfStockException(product, quantity, product.getStock());
@@ -52,6 +53,13 @@ public class DefaultCartService implements CartService {
         }
         cart.getItems().add(new CartItem(product, quantity));
         recalculateCart(cart);
+    }
+
+    private Optional<Product> findItemToUpdate(Long productId, Cart cart) {
+        return cart.getItems().stream()
+                .map(CartItem::getProduct)
+                .filter(product -> productId.equals(product.getId()))
+                .findAny();
     }
 
     @Override
@@ -99,6 +107,12 @@ public class DefaultCartService implements CartService {
     private void changeQuantity(Cart cart, int quantity, int i, CartItem cartItem) {
         cartItem.setQuantity(quantity);
         cart.getItems().set(i, cart.getItems().get(i));
+        recalculateCart(cart);
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        cart.getItems().removeAll(cart.getItems());
         recalculateCart(cart);
     }
 }

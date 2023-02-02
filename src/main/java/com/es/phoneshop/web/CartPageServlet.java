@@ -1,6 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.cart.OutOfStockException;
@@ -19,14 +18,12 @@ import java.util.Locale;
 import java.util.Map;
 
 public class CartPageServlet extends HttpServlet {
-    private ProductDao productDao;
     private CartService cartService;
     private ProductsHistory productsHistory;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
         productsHistory = ProductsHistory.getInstance();
     }
@@ -44,6 +41,12 @@ public class CartPageServlet extends HttpServlet {
         String[] quantities = request.getParameterValues("quantity");
 
         Map<Long, String> errors = new HashMap<>();
+        if (productIds == null) {
+            request.setAttribute("errors", errors);
+            errors.put(0L, "There are zero products");
+            doGet(request, response);
+            return;
+        }
         for (int i = 0; i < productIds.length; i++) {
             Long productId = Long.valueOf(productIds[i]);
 
@@ -60,7 +63,6 @@ public class CartPageServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/cart?message=Cart updated successfully");
         } else {
             request.setAttribute("errors", errors);
-
             doGet(request, response);
         }
     }

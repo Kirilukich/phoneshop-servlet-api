@@ -12,10 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Currency;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
@@ -43,7 +41,7 @@ public class ProductListPageServlet extends HttpServlet {
                 Optional.ofNullable(sortField).map(SortField::valueOf).orElse(null),
                 Optional.ofNullable(sortOrder).map(SortOrder::valueOf).orElse(null)
         ));
-                request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class ProductListPageServlet extends HttpServlet {
             try {
                 NumberFormat format = NumberFormat.getInstance(request.getLocale());
                 int quantity = format.parse(request.getParameter("quantity")).intValue();
-                cartService.add(cartService.getCart(request), productId, quantity);
+                cartService.add(request, productId, quantity);
                 response.sendRedirect(request.getContextPath() + "/products?message=Product added to cart!");
                 return;
             } catch (NumberFormatException | ParseException e) {
