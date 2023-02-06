@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,5 +90,14 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public synchronized void delete(Long id) throws NoSuchElementException {
         products.remove(getProduct(id));
+    }
+
+    @Override
+    public List<Product> findProducts(String query, BigDecimal minPrice, BigDecimal maxPrice, SearchMethod searchMethod) {
+        return products.stream()
+                .filter(product -> query == null || query.isEmpty() || product.getDescription().contains(query))
+                .filter(product -> minPrice == null || product.getPrice().compareTo(minPrice) != -1)
+                .filter(product -> maxPrice == null || product.getPrice().compareTo(maxPrice) != 1)
+                .collect(Collectors.toList());
     }
 }
